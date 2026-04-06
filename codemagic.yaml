@@ -1,37 +1,17 @@
 workflows:
   ios-workflow:
-    name: iOS Build
+    name: iOS Simulator Build
     max_build_duration: 60
     environment:
       flutter: stable
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Fix Flutter and get dependencies
+      - name: Get dependencies
         script: |
           flutter pub get
-          flutter analyze --suggestions || true
-      - name: Build iOS project for simulator
+      - name: Build iOS for simulator
         script: |
           flutter build ios --simulator --no-codesign
     artifacts:
       - build/ios/iphonesimulator/*.app
-
-  android-workflow:
-    name: Android Build
-    max_build_duration: 60
-    environment:
-      flutter: stable
-    scripts:
-      - name: Fix Android Gradle issue
-        script: |
-          flutter pub get
-          cd android
-          # Downgrade Gradle to compatible version
-          echo "org.gradle.jvmargs=-Xmx4G -XX:+HeapDumpOnOutOfMemoryError" >> gradle.properties
-          cd ..
-      - name: Build Android APK
-        script: |
-          flutter build apk --debug
-    artifacts:
-      - build/app/outputs/flutter-apk/*.apk
